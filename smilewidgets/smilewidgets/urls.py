@@ -14,8 +14,18 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
+from django.urls import path 
+from django.conf.urls import url, include
+from rest_framework import routers
+from products import views
+
+router = routers.DefaultRouter()
+
+# Make the API use automatic URL routing.
+# Keep/include the admin urls that were in there already
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    url(r'^', include(router.urls)),
+    url(r'^api/get-price', views.ProductPriceView.as_view())
 ]

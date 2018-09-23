@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django_extensions',
+    'rest_framework',
     'products.apps.ProductsConfig',
 ]
 
@@ -71,6 +72,11 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'smilewidgets.wsgi.application'
 
+REST_FRAMEWORK = {
+    'DEFAULT_PARSER_CLASSES': {
+        'rest_framework.parsers.JSONParser',
+    }
+}
 
 # Database
 # https://docs.djangoproject.com/en/2.0/ref/settings/#databases
@@ -81,7 +87,7 @@ DATABASES = {
         'NAME': os.getenv('POSTGRES_DB', 'postgres'),
         'USER': os.getenv('POSTGRES_USER', 'postgres'),
         'PASSWORD': os.getenv('POSTGRES_PASSWORD', 'postgres'),
-        'HOST': 'localhost',
+        'HOST': 'localhost', # adjusted the hostname to reflect it is localhost
         'PORT': 5432  # default postgres port
     }
 }

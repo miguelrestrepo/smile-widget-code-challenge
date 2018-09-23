@@ -9,6 +9,10 @@ class Product(models.Model):
     def __str__(self):
         return '{} - {}'.format(self.name, self.code)
 
+    @property
+    def formatted_price(self):
+        return '${0:.2f}'.format(self.price / 100)
+
 
 class GiftCard(models.Model):
     code = models.CharField(max_length=30)
@@ -22,3 +26,17 @@ class GiftCard(models.Model):
     @property
     def formatted_amount(self):
         return '${0:.2f}'.format(self.amount / 100)
+
+class ProductPrice(models.Model):
+    product = models.ForeignKey('Product', on_delete=models.PROTECT, help_text='Product referenced')
+    price = models.PositiveIntegerField(help_text='Price of product in cents')
+    date_start = models.DateField()
+    date_end = models.DateField(blank=True, null=True)
+
+    def __str__(self):
+        return '{} - {} - {} - {}'.format(self.product,self.formatted_price,self.date_start,self.date_end)
+
+    @property
+    def formatted_price(self):
+        return '${0:.2f}'.format(self.price / 100)
+    

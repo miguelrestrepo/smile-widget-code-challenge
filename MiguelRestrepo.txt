@@ -1,0 +1,29 @@
+Hello,
+
+So to explain a little bit on what I did, added and modified. I followed the instructions given in the Github repository:
+
+- I forked the project.
+- I created a virtualenv with Python 3.6 in my local machine (a local VMWare virtual machine with Ubuntu 18.04.1)
+- I installed PostgreSQL and utilities needed on my local machine. I made sure the user postgres had pwd equal to user name
+- I cloned the project locally and ran pip install -r requirements.txt
+- I modified settings.py to point the correct database hostname
+- I ran migrations as directed
+- I loaded the data from fixtures as per the directions
+- I pip installed IPython and django-extensions so I could use manage.py shell_plus which saves time and effort
+- I pip installed djangorestframework, together with markdown and django-filter (as recommended by the authors of Django REST framework)
+- I created a new git branch called migres to do my work
+- I added the new model ProductPrice with the appropriate data as specified in the code challenge. I prepared and ran migrations for this new model to create the corresponding table.
+- I prepared a new fixtures file including this new model and corresponding data - in products/0002_fixtures.json
+- I added a new view for the JSON end point, ProductPriceView of type APIView - which only allows JSON data via POST requests. This view includes all the logic to verify that the JSON data sent via POST is correct. The giftCardCode is optional so an incorrect code still produces a price, but will not include the discount of a valid gift card. If the data is acceptable, the returned data is a JSON dictionary with a key "price" with the calculated price nicely formatted. If there are any errors detected, the JSON data returned indicates a failure, echoes the data sent with a message of what went wrong.
+- I added the corresponding URL api/get-price that consumes the ProductPriceView
+- I tested with curl via the command line like these examples (I ran was running manage.py runserver 0.0.0.0:8888):
+
+a) curl --header "Content-Type: application/json" --request POST --data '{"productCode":"big_widget", "date":"11-24-2018", "giftCardCode":"250OFF"}' http://localhost:8888/api/get-price/ (pass)
+
+b) curl --header "Content-Type: application/json" --request POST --data '{"productCode":"big_widget", "date":"12-12-2018", "giftCardCode":"250OFF"}' http://localhost:8888/api/get-price/ (pass)
+
+c) curl --header "Content-Type: application/json" --request POST --data '{"productCode":"big_widget", "date":"12-12-2018"}' http://localhost:8888/api/get-price/ (pass)
+  
+d) curl --header "Content-Type: application/json" --request POST --data '{"productCode":"big_widget", "date":"12-12-2018", "giftCardCode":"250OOFF"}' http://localhost:8888/api/get-price/ (pass with message of incorrect gift card code)
+  
+e) curl --header "Content-Type: application/json" --request POST --data '{"productCode":"big_widget", "date":"12-12/2018", "giftCardCode":"250OFF"}' http://localhost:8888/api/get-price/ (error - incorrect date format)
